@@ -19,7 +19,7 @@ public class SlotMachine implements Runnable
 	// Colours
 	public static final Color	UI_BACKGROUND_COLOR			= new Color(45, 45, 45);
 	public static final Color	UI_SLOT_BORDER_COLOR		= new Color(20, 20, 20);
-	public static final int		UI_SLOT_BORDER_SIZE			= 10;
+	public static final int		UI_SLOT_BORDER_SIZE			= 20;
 	public static final Color	UI_SLOT_BACKGROUND_COLOR	= new Color(255, 255, 255);
 	public static final Color	UI_SLOT_LINE_COLOR			= new Color(255, 0, 0, 120);
 	public static final int		UI_SLOT_LINE_SIZE			= 4;
