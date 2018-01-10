@@ -35,14 +35,42 @@ public class SlotMachine implements Runnable
 	public static final int FPS_LIMIT = 60;
 	public static boolean isRunning = true;
 	
+	// Speed params
+	public static final double	SLOT_SPEED = HEIGHT / 1000;
+	
 	private static SlotMachine obj;
+	
+	// Stuff for handling the things (Yes I'm tired and can't do the english rn)
+	public Line left	= new Line();
+	public Line middle	= new Line();
+	public Line right	= new Line();
+	
+	public static class Line
+	{
+		public Symbol[] symbols = new Symbol[3];
+		
+		public double y_master = 0D;
+		
+		
+	}
+	
+	public static class Symbol
+	{
+		public SlotSymbol symbol;
+		public double y = 0D;
+		
+		public Symbol(SlotSymbol symbol)
+		{
+			this.symbol = symbol;
+		}
+	}
 	
 	public static enum SlotSymbol
 	{
 		CHERRY("cherry.png", 100D, 0.50F),
-		BELL("bell.png", 40D, 5.00F),
-		LEMON("lemon.png", 50D, 3.00F),
 		ORANGE("orange.png", 60D, 2.00F),
+		LEMON("lemon.png", 50D, 3.00F),
+		BELL("bell.png", 40D, 5.00F),
 		STAR("star.png", 20D, 10.00F),
 		SKULL("skull.png", 40D, -2.00F),
 		PENGUIN("penguin.png", 5D, 100.00F);
