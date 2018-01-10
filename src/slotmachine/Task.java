@@ -11,11 +11,31 @@ public abstract class Task
 	public abstract void update();
 	public abstract Image render(double delta);
 	
+	public static final Task slotTask = new Task()
+	{
+		@Override
+		public void update()
+		{
+			
+		}
+		
+		@Override
+		public Image render(double delta)
+		{
+			BufferedImage canvas = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2d = canvas.createGraphics();
+			
+			
+			
+			return canvas;
+		}
+	};
+	
+	/**
+	 * Renders the background.
+	 */
 	public static final Task backgroundRenderTask = new Task()
 	{
-		/*
-		 * Renders the background.
-		 */
 		@Override
 		public void update()
 		{
@@ -69,6 +89,7 @@ public abstract class Task
 			g2d.setColor(UI_SLOT_LINE_COLOR);
 			g2d.fillRect(0, (HEIGHT / 2) - UI_SLOT_LINE_SIZE, WIDTH, UI_SLOT_LINE_SIZE);
 			
+			g2d.dispose();
 			return canvas;
 		}
 	};

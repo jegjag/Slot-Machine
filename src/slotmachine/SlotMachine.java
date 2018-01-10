@@ -1,10 +1,12 @@
 package slotmachine;
 
+import static slotmachine.resources.Resources.get;
 import static slotmachine.Task.*;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.VolatileImage;
 import java.util.ArrayList;
@@ -34,6 +36,28 @@ public class SlotMachine implements Runnable
 	public static boolean isRunning = true;
 	
 	private static SlotMachine obj;
+	
+	public static enum SlotSymbol
+	{
+		CHERRY("cherry.png", 100D, 0.50F),
+		BELL("bell.png", 40D, 5.00F),
+		LEMON("lemon.png", 50D, 3.00F),
+		ORANGE("orange.png", 60D, 2.00F),
+		STAR("star.png", 20D, 10.00F),
+		SKULL("skull.png", 40D, -2.00F),
+		PENGUIN("penguin.png", 5D, 100.00F);
+		
+		final Image icon;
+		final double chance;
+		final double payout;
+		
+		SlotSymbol(String iconPath, double chance, float payout)
+		{
+			icon = get(iconPath);
+			this.chance = chance;
+			this.payout = payout;
+		}
+	}
 	
 	public static void main(String[] args)
 	{
