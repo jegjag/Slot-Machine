@@ -21,7 +21,8 @@ public class SlotMachine implements Runnable
 	public static final Color	UI_SLOT_BORDER_COLOR		= new Color(20, 20, 20);
 	public static final int		UI_SLOT_BORDER_SIZE			= 10;
 	public static final Color	UI_SLOT_BACKGROUND_COLOR	= new Color(255, 255, 255);
-	public static final Color	UI_DARK_ALPHA_COLOR			= new Color(20, 20, 20, 60);
+	public static final Color	UI_SLOT_LINE_COLOR			= new Color(255, 0, 0, 120);
+	public static final int		UI_SLOT_LINE_SIZE			= 4;
 	
 	// Dimensions
 	public static final Dimension SIZE = Toolkit.getDefaultToolkit().getScreenSize();

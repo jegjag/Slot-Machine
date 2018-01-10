@@ -66,8 +66,8 @@ public abstract class Task
 			);
 			
 			// That line thing
-			g2d.setColor(UI_DARK_ALPHA_COLOR);
-			g2d.drawLine(0, HEIGHT / 2, WIDTH, HEIGHT / 2);
+			g2d.setColor(UI_SLOT_LINE_COLOR);
+			g2d.fillRect(0, (HEIGHT / 2) - UI_SLOT_LINE_SIZE, WIDTH, UI_SLOT_LINE_SIZE);
 			
 			return canvas;
 		}
