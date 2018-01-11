@@ -1,7 +1,6 @@
 package slotmachine;
 
 import static slotmachine.SlotMachine.*;
-import static java.lang.Math.*;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
