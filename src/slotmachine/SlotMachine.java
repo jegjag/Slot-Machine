@@ -11,6 +11,7 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
@@ -35,23 +36,81 @@ public class SlotMachine implements Runnable
 	public static final int		UI_SLOT_ICON_SIZE			= (int)((WIDTH / 6) / 1.3);
 	
 	// Game loop stuff
-	public static final int FPS_LIMIT = 60;
+	public static final int UPDATE_LIMIT = 144;
+	public static final int FPS_CAP = 60;
 	public static boolean isRunning = true;
-	
-	// Speed params
-	public static final double	SLOT_SPEED = HEIGHT / 1000;
 	
 	// Objects
 	private static SlotMachine obj;
+	public static Listener listener = new Listener();
 	public static Random r = new Random();
 	
-	// Stuff for handling the things (Yes I'm tired and can't do the english rn)
+	// Slot machine stuff
 	public static Line left, middle, right;
+	public static Symbol selectedLeft = null, selectedMiddle = null, selectedRight = null;
+	public static boolean isSpinning = false;
+	
+	// Actual super important change stuff
+	public static float balance = 1.00F;
+	public static final float SPIN_COST = 0.10F;
+	
+	public static void spin()
+	{
+		balance -= SPIN_COST;
+		
+		left.speed_multiplier = 1D;
+		middle.speed_multiplier = 1D;
+		right.speed_multiplier = 1D;
+		
+		isSpinning = true;
+	}
+	
+	public static void finishSpin()
+	{
+		isSpinning = false;
+		
+		//slotTask.stopReturn();
+		
+		selectedLeft	= getSelectedSymbol(left.symbols);
+		selectedMiddle	= getSelectedSymbol(middle.symbols);
+		selectedRight	= getSelectedSymbol(right.symbols);
+		
+		final int HALF_HEIGHT = (HEIGHT / 2) - (UI_SLOT_ICON_SIZE / 2);
+		
+		if(selectedLeft == selectedMiddle && selectedMiddle == selectedRight)
+		{
+			// 3 of the same
+			balance += selectedMiddle.symbol.payout;
+		}
+	}
+	
+	public static Symbol getSelectedSymbol(Symbol[] symbols)
+	{
+		int closestIndex = 0;
+		double closest = 0x7FFFFFFF;
+		for(int i = 0; i < symbols.length; i++)
+		{
+			double current = symbols[i].y - (HEIGHT / 2);
+			if(current < 0)
+			{
+				current = -current;
+			}
+			if(current < closest)
+			{
+				// If smaller
+				closest = current;
+				closestIndex = i;
+			}
+		}
+		
+		return symbols[closestIndex];
+	}
 	
 	public static class Symbol
 	{
 		public SlotSymbol symbol;
 		public double y = 0D;
+		public double y_speed = 20D;
 		
 		public Symbol(SlotSymbol symbol)
 		{
@@ -70,15 +129,15 @@ public class SlotMachine implements Runnable
 		}
 		
 		int num = r.nextInt(total);
-		total = 0;
+		int current = 0;
+		
 		for(int i = 0; i < symbols.length; i++)
 		{
-			if(num > total && num < total + symbols[i].chance)
+			if(num < symbols[i].chance + current)
 			{
 				return symbols[i];
 			}
-			
-			total += symbols[i].chance;
+			current += symbols[i].chance;
 		}
 		
 		return null;
@@ -86,25 +145,38 @@ public class SlotMachine implements Runnable
 	
 	public static class Line
 	{
-		public Symbol[] symbols = new Symbol[3];
+		public Symbol[] symbols = new Symbol[4];
 		private final int x; 
+		public double speed_multiplier = 1.0D;
 		
-		public Line(int x)
+		public Line(int x, double speed_mult)
 		{
 			this.x = x;
+			speed_multiplier = speed_mult;
 			
 			symbols[0] = new Symbol(randomSymbol());
 			symbols[1] = new Symbol(randomSymbol());
 			symbols[2] = new Symbol(randomSymbol());
+			symbols[3] = new Symbol(randomSymbol());
 			
 			symbols[0].y = HEIGHT / 12;
-			symbols[1].y = HEIGHT / 2 - UI_SLOT_ICON_SIZE / 2;
-			symbols[2].y = (HEIGHT - (HEIGHT / 12) - (WIDTH / 6)) + UI_SLOT_ICON_SIZE / 2;
+			symbols[1].y = (HEIGHT / 12) * 2 + UI_SLOT_ICON_SIZE;
+			symbols[2].y = (HEIGHT / 12) * 3 + (UI_SLOT_ICON_SIZE * 2);
+			symbols[3].y = (HEIGHT / 12) * 4 + (UI_SLOT_ICON_SIZE * 3);
 		}
 		
 		public void update()
 		{
-			
+			for(int i = 0; i < symbols.length; i++)
+			{
+				symbols[i].y += symbols[i].y_speed * speed_multiplier;
+				
+				if(symbols[i].y >= HEIGHT)
+				{
+					symbols[i].y = -UI_SLOT_ICON_SIZE;
+					symbols[i].symbol = randomSymbol();
+				}
+			}
 		}
 		
 		public Image render(double delta)
@@ -114,12 +186,16 @@ public class SlotMachine implements Runnable
 			
 			for(int i = 0; i < symbols.length; i++)
 			{
-				g2d.drawImage(symbols[i].symbol.icon,
-						x + UI_SLOT_BORDER_SIZE + ((WIDTH / 6) - UI_SLOT_ICON_SIZE) / 2,
-						(int) (symbols[i].y * delta), UI_SLOT_ICON_SIZE - UI_SLOT_BORDER_SIZE,
-						UI_SLOT_ICON_SIZE - UI_SLOT_BORDER_SIZE,
-						null
-				);
+				try
+				{
+					int x = this.x + UI_SLOT_BORDER_SIZE + ((WIDTH / 6) - UI_SLOT_ICON_SIZE) / 2;
+					int y = (int) (symbols[i].y * delta);
+					int w = UI_SLOT_ICON_SIZE - UI_SLOT_BORDER_SIZE;
+					int h = UI_SLOT_ICON_SIZE - UI_SLOT_BORDER_SIZE;
+					
+					g2d.drawImage(symbols[i].symbol.icon, x, y, w, h, null);
+				}
+				catch(Exception e){}
 			}
 			
 			g2d.dispose();
@@ -151,18 +227,22 @@ public class SlotMachine implements Runnable
 	
 	public static void main(String[] args)
 	{
-		left	= new Line(WIDTH / 5);
-		middle	= new Line((WIDTH / 2) - (WIDTH / 12));
-		right	= new Line(WIDTH - (WIDTH / 5) - (WIDTH / 6));
+		System.setProperty("sun.java2d.opengl", "true");
+		
+		left	= new Line(WIDTH / 5, 1.0D);
+		middle	= new Line((WIDTH / 2) - (WIDTH / 12), 1.0D);
+		right	= new Line(WIDTH - (WIDTH / 5) - (WIDTH / 6), 1.0D);
 		
 		frame.setSize(SIZE);
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.addKeyListener(listener);
 		frame.setVisible(true);
 		
 		obj = new SlotMachine();
 		new Thread(obj).start();
 		
+		obj.addTask(listener);
 		obj.addTask(backgroundRenderTask);
 		obj.addTask(slotTask);
 		obj.addTask(lineTask);
@@ -226,10 +306,10 @@ public class SlotMachine implements Runnable
 	@Override
 	public void run()
 	{
-		boolean limitFPS = FPS_LIMIT > 0;
+		boolean limitFPS = FPS_CAP > 0;
 		
 		// Start loop
-		final long UPDATE_NANOS = 1000000000 / FPS_LIMIT;
+		final long UPDATE_NANOS = 1000000000 / UPDATE_LIMIT;
 		long previous = System.nanoTime();
 		long delay = 0L;
 		
@@ -269,7 +349,7 @@ public class SlotMachine implements Runnable
 			{
 				try
 				{
-					Thread.sleep((1000 / FPS_LIMIT) - (delay / 1000 / 1000));
+					Thread.sleep((1000 / FPS_CAP) - (delay / 1000 / 1000));
 				}
 				catch(Exception e){}
 			}
