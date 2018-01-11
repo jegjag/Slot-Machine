@@ -11,7 +11,6 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
@@ -37,13 +36,19 @@ public class SlotMachine implements Runnable
 	
 	// Game loop stuff
 	public static final int UPDATE_LIMIT = 144;
-	public static final int FPS_CAP = 60;
+	public static final int FPS_CAP = 144;
 	public static boolean isRunning = true;
 	
 	// Objects
 	private static SlotMachine obj;
 	public static Listener listener = new Listener();
 	public static Random r = new Random();
+	
+	// Slot machine not useful stuff
+	protected static boolean	leftReturn = false,
+								middleReturn = false,
+								rightReturn = false;
+	public static boolean hasReturned = true;
 	
 	// Slot machine stuff
 	public static Line left, middle, right;
@@ -67,17 +72,18 @@ public class SlotMachine implements Runnable
 	
 	public static void finishSpin()
 	{
-		isSpinning = false;
+		left.hasReturned = false;
+		middle.hasReturned = false;
+		right.hasReturned = false;
 		
-		//slotTask.stopReturn();
+		hasReturned = false;
+		isSpinning = false;
 		
 		selectedLeft	= getSelectedSymbol(left.symbols);
 		selectedMiddle	= getSelectedSymbol(middle.symbols);
 		selectedRight	= getSelectedSymbol(right.symbols);
 		
-		final int HALF_HEIGHT = (HEIGHT / 2) - (UI_SLOT_ICON_SIZE / 2);
-		
-		if(selectedLeft == selectedMiddle && selectedMiddle == selectedRight)
+		if(selectedLeft.equals(selectedMiddle) && selectedMiddle.equals(selectedRight))
 		{
 			// 3 of the same
 			balance += selectedMiddle.symbol.payout;
@@ -148,6 +154,7 @@ public class SlotMachine implements Runnable
 		public Symbol[] symbols = new Symbol[4];
 		private final int x; 
 		public double speed_multiplier = 1.0D;
+		public boolean hasReturned = false;
 		
 		public Line(int x, double speed_mult)
 		{
@@ -246,6 +253,7 @@ public class SlotMachine implements Runnable
 		obj.addTask(backgroundRenderTask);
 		obj.addTask(slotTask);
 		obj.addTask(lineTask);
+		obj.addTask(middleReturnTask);
 	}
 	
 	// Frametime stuff

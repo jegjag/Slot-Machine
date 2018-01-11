@@ -34,7 +34,7 @@ public class Listener extends Task implements KeyListener
 	@Override
 	public void update()
 	{
-		if(isPressed(VK_SPACE) && !isSpinning)
+		if(isPressed(VK_SPACE) && !isSpinning && hasReturned)
 		{
 			spin();
 		}

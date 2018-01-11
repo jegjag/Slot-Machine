@@ -1,6 +1,7 @@
 package slotmachine;
 
 import static slotmachine.SlotMachine.*;
+import static java.lang.Math.*;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -12,10 +13,62 @@ public abstract class Task
 	public abstract void update();
 	public abstract Image render(double delta);
 	
+	public static final double RETURN_SPEED = 0.2D;
+	private static final int HALF_HEIGHT = (HEIGHT / 2) - (UI_SLOT_ICON_SIZE / 2);
+	private static final int THRESHOLD = 10;
+	
+	public static final Task middleReturnTask = new Task()
+	{
+		private void handle(Symbol symbol, Line line)
+		{
+			if(!line.hasReturned && symbol.y % HALF_HEIGHT > THRESHOLD)
+			{
+				double speed = 0D;
+				if(symbol.y < HALF_HEIGHT)
+				{
+					speed = RETURN_SPEED;
+				}
+				else if(symbol.y > HALF_HEIGHT)
+				{
+					speed = -RETURN_SPEED;
+				}
+				line.speed_multiplier = speed;
+			}
+			else if(!line.hasReturned)
+			{
+				System.out.println(line + " has returned");
+				line.hasReturned = true;
+				line.speed_multiplier = 0D;
+			}
+		}
+		
+		@Override
+		public void update()
+		{
+			if(!isSpinning)
+			{
+				if(!hasReturned)
+				{
+					handle(getSelectedSymbol(left.symbols), left);
+					handle(getSelectedSymbol(middle.symbols), middle);
+					handle(getSelectedSymbol(right.symbols), right);
+					
+					if(left.hasReturned && middle.hasReturned && right.hasReturned)
+					{
+						hasReturned = true;
+					}
+				}
+			}
+		}
+		
+		public Image render(double delta)
+		{
+			return null;
+		}
+	};
+	
 	public static final Task slotTask = new Task()
 	{
-		private final int HALF_HEIGHT = (HEIGHT / 2) - (UI_SLOT_ICON_SIZE / 2);
-		
 		@Override
 		public void update()
 		{
@@ -29,30 +82,15 @@ public abstract class Task
 				else
 				{
 					left.speed_multiplier = 0;
-					
-					Symbol selected = getSelectedSymbol(left.symbols);
-					
-					double speed = 0D;
-					if(selected.y < HALF_HEIGHT)
-					{
-						speed = 0.2D;
-					}
-					else if(selected.y > HALF_HEIGHT)
-					{
-						speed = -0.2D;
-					}
-					
-					left.speed_multiplier = speed;
-					return;
 				}
 				
-				if(middle.speed_multiplier > 0)	middle.speed_multiplier -= 0.004;
+				if(middle.speed_multiplier > 0)	middle.speed_multiplier -= 0.003;
 				else
 				{
 					middle.speed_multiplier = 0;
 				}
 				
-				if(right.speed_multiplier > 0)	right.speed_multiplier -= 0.003;
+				if(right.speed_multiplier > 0)	right.speed_multiplier -= 0.002;
 				else
 				{
 					// Finish spinning
@@ -60,6 +98,12 @@ public abstract class Task
 					right.speed_multiplier = 0;
 					finishSpin();
 				}
+			}
+			else if(!hasReturned)
+			{
+				left.update();
+				middle.update();
+				right.update();
 			}
 		}
 		
