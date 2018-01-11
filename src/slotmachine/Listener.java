@@ -38,6 +38,16 @@ public class Listener extends Task implements KeyListener
 		{
 			spin();
 		}
+		
+		if(isPressed(VK_ESCAPE))
+		{
+			System.exit(0);
+		}
+		
+		if(isPressed(VK_R) && !isSpinning && hasReturned)
+		{
+			balance = 1.00F;
+		}
 	}
 	
 	@Override

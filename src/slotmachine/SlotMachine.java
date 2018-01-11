@@ -83,7 +83,7 @@ public class SlotMachine implements Runnable
 		selectedMiddle	= getSelectedSymbol(middle.symbols);
 		selectedRight	= getSelectedSymbol(right.symbols);
 		
-		if(selectedLeft.equals(selectedMiddle) && selectedMiddle.equals(selectedRight))
+		if(selectedLeft.symbol == selectedMiddle.symbol && selectedMiddle.symbol == selectedRight.symbol)
 		{
 			// 3 of the same
 			balance += selectedMiddle.symbol.payout;
@@ -212,13 +212,13 @@ public class SlotMachine implements Runnable
 	
 	public static enum SlotSymbol
 	{
-		CHERRY("cherry.png", 100, 0.50F),
+		CHERRY("cherry.png", 200, 0.50F),
 		ORANGE("orange.png", 60, 2.00F),
-		LEMON("lemon.png", 50, 3.00F),
-		BELL("bell.png", 40, 5.00F),
-		STAR("star.png", 20, 10.00F),
-		SKULL("skull.png", 40, -2.00F),
-		PENGUIN("penguin.png", 10, 100.00F);
+		LEMON("lemon.png", 40, 3.00F),
+		BELL("bell.png", 25, 5.00F),
+		STAR("star.png", 10, 10.00F),
+		SKULL("skull.png", 50, -2.00F),
+		PENGUIN("penguin.png", 5, 100.00F);
 		
 		final Image icon;
 		final int chance;
@@ -254,6 +254,7 @@ public class SlotMachine implements Runnable
 		obj.addTask(slotTask);
 		obj.addTask(lineTask);
 		obj.addTask(middleReturnTask);
+		obj.addTask(task_renderUI);
 	}
 	
 	// Frametime stuff

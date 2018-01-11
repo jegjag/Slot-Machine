@@ -3,9 +3,11 @@ package slotmachine;
 import static slotmachine.SlotMachine.*;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 
 public abstract class Task
 {
@@ -15,6 +17,51 @@ public abstract class Task
 	public static final double RETURN_SPEED = 0.2D;
 	private static final int HALF_HEIGHT = (HEIGHT / 2) - (UI_SLOT_ICON_SIZE / 2);
 	private static final int THRESHOLD = 10;
+	
+	public static final Task task_renderUI = new Task()
+	{
+		@Override
+		public void update()
+		{
+			
+		}
+		
+		private BufferedImage canvas = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		
+		@Override
+		public Image render(double delta)
+		{
+			Graphics2D g2d = canvas.createGraphics();
+			g2d.setBackground(new Color(0, 0, 0, 0));
+			g2d.clearRect(0, 0, WIDTH, HEIGHT);
+			
+			// Render UI here
+			g2d.setColor(new Color(200, 200, 200));
+			g2d.setFont(new Font("Open Sans", Font.BOLD, HEIGHT / 50));
+			
+			DecimalFormat df = new DecimalFormat();
+			df.setMaximumFractionDigits(2);
+			
+			String formattedBalance = null;
+			if(df.format(balance).length() == 3)
+			{
+				formattedBalance = df.format(balance) + "0"; 
+			}
+			else if(df.format(balance).length() == 1)
+			{
+				formattedBalance = df.format(balance) + ".00";
+			}
+			else
+			{
+				formattedBalance = df.format(balance);
+			}
+			
+			g2d.drawString("Balance: £" + formattedBalance, WIDTH / 48, HEIGHT / 24);
+			
+			g2d.dispose();
+			return canvas;
+		}
+	};
 	
 	public static final Task middleReturnTask = new Task()
 	{
