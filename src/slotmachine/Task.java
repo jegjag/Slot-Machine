@@ -35,7 +35,6 @@ public abstract class Task
 			}
 			else if(!line.hasReturned)
 			{
-				System.out.println(line + " has returned");
 				line.hasReturned = true;
 				line.speed_multiplier = 0D;
 			}
