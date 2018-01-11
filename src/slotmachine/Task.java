@@ -25,8 +25,33 @@ public abstract class Task
 			BufferedImage canvas = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g2d = canvas.createGraphics();
 			
+			g2d.drawImage(left.render(delta), 0, 0, null);
+			g2d.drawImage(middle.render(delta), 0, 0, null);
+			g2d.drawImage(right.render(delta), 0, 0, null);
 			
+			g2d.dispose();
+			return canvas;
+		}
+	};
+	
+	public static final Task lineTask = new Task()
+	{
+		@Override
+		public void update()
+		{
 			
+		}
+		
+		@Override
+		public Image render(double delta)
+		{
+			BufferedImage canvas = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2d = canvas.createGraphics();
+			
+			g2d.setColor(UI_SLOT_LINE_COLOR);
+			g2d.fillRect(0, (HEIGHT / 2) - UI_SLOT_LINE_SIZE, WIDTH, UI_SLOT_LINE_SIZE);
+			
+			g2d.dispose();
 			return canvas;
 		}
 	};
@@ -84,10 +109,6 @@ public abstract class Task
 					(WIDTH / 6) - (UI_SLOT_BORDER_SIZE * 2),
 					HEIGHT
 			);
-			
-			// That line thing
-			g2d.setColor(UI_SLOT_LINE_COLOR);
-			g2d.fillRect(0, (HEIGHT / 2) - UI_SLOT_LINE_SIZE, WIDTH, UI_SLOT_LINE_SIZE);
 			
 			g2d.dispose();
 			return canvas;
