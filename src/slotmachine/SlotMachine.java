@@ -64,14 +64,17 @@ public class SlotMachine implements Runnable
 	
 	public static void spin()
 	{
-		balance		-= SPIN_COST;
-		totalSpent	+= SPIN_COST;
-		
-		left.speed_multiplier = 1D;
-		middle.speed_multiplier = 1D;
-		right.speed_multiplier = 1D;
-		
-		isSpinning = true;
+		if(balance > 0)
+		{
+			balance		-= SPIN_COST;
+			totalSpent	+= SPIN_COST;
+			
+			left.speed_multiplier = 1D;
+			middle.speed_multiplier = 1D;
+			right.speed_multiplier = 1D;
+			
+			isSpinning = true;
+		}
 	}
 	
 	public static void finishSpin()
