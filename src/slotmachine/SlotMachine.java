@@ -57,11 +57,15 @@ public class SlotMachine implements Runnable
 	
 	// Actual super important change stuff
 	public static float balance = 1.00F;
+	public static float totalSpent = 0.00F;
+	public static float totalWon = 0.00F;
+	
 	public static final float SPIN_COST = 0.10F;
 	
 	public static void spin()
 	{
-		balance -= SPIN_COST;
+		balance		-= SPIN_COST;
+		totalSpent	+= SPIN_COST;
 		
 		left.speed_multiplier = 1D;
 		middle.speed_multiplier = 1D;
@@ -87,6 +91,7 @@ public class SlotMachine implements Runnable
 		{
 			// 3 of the same
 			balance += selectedMiddle.symbol.payout;
+			totalWon += selectedMiddle.symbol.payout;
 		}
 	}
 	
@@ -214,10 +219,10 @@ public class SlotMachine implements Runnable
 	{
 		CHERRY("cherry.png", 200, 0.50F),
 		ORANGE("orange.png", 60, 2.00F),
-		LEMON("lemon.png", 40, 3.00F),
-		BELL("bell.png", 25, 5.00F),
-		STAR("star.png", 10, 10.00F),
-		SKULL("skull.png", 50, -2.00F),
+		LEMON("lemon.png", 40, 5.00F),
+		BELL("bell.png", 25, 10.00F),
+		STAR("star.png", 10, 20.00F),
+		SKULL("skull.png", 50, -2.50F),
 		PENGUIN("penguin.png", 5, 100.00F);
 		
 		final Image icon;
@@ -262,7 +267,7 @@ public class SlotMachine implements Runnable
 	private static int currentFrameTime = 0;
 	private static Timer mainLoopTimer = new Timer();
 	
-	public int getCurrentFrameTime()
+	public static int getCurrentFrameTime()
 	{
 		return currentFrameTime;
 	}
@@ -302,7 +307,7 @@ public class SlotMachine implements Runnable
 		
 		for(Task task : tasks)
 		{
-			g2d.drawImage(task.render(delta), 0, 0, null);
+			task.render(g2d, delta);
 		}
 		
 		g2d.dispose();
@@ -310,6 +315,8 @@ public class SlotMachine implements Runnable
 		g2d = (Graphics2D) frame.getGraphics();
 		g2d.drawImage(canvas, 0, 0, null);
 		g2d.dispose();
+		
+		frames++;
 	}
 	
 	@Override
@@ -324,7 +331,8 @@ public class SlotMachine implements Runnable
 		
 		canvas = frame.createVolatileImage(WIDTH, HEIGHT);
 		
-		mainLoopTimer.scheduleAtFixedRate(
+		mainLoopTimer.scheduleAtFixedRate
+		(
 			new TimerTask()
 			{
 				@Override

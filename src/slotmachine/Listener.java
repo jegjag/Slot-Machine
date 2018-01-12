@@ -3,7 +3,7 @@ package slotmachine;
 import static slotmachine.SlotMachine.*;
 import static java.awt.event.KeyEvent.*;
 
-import java.awt.Image;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -51,8 +51,5 @@ public class Listener extends Task implements KeyListener
 	}
 	
 	@Override
-	public Image render(double delta)
-	{
-		return null;
-	}
+	public void render(Graphics2D g2d, double delta){}
 }

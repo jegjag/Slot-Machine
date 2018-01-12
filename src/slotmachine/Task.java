@@ -5,14 +5,12 @@ import static slotmachine.SlotMachine.*;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 
 public abstract class Task
 {
 	public abstract void update();
-	public abstract Image render(double delta);
+	public abstract void render(Graphics2D g2d, double delta);
 	
 	public static final double RETURN_SPEED = 0.2D;
 	private static final int HALF_HEIGHT = (HEIGHT / 2) - (UI_SLOT_ICON_SIZE / 2);
@@ -20,25 +18,8 @@ public abstract class Task
 	
 	public static final Task task_renderUI = new Task()
 	{
-		@Override
-		public void update()
+		private String format(float balance)
 		{
-			
-		}
-		
-		private BufferedImage canvas = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-		
-		@Override
-		public Image render(double delta)
-		{
-			Graphics2D g2d = canvas.createGraphics();
-			g2d.setBackground(new Color(0, 0, 0, 0));
-			g2d.clearRect(0, 0, WIDTH, HEIGHT);
-			
-			// Render UI here
-			g2d.setColor(new Color(200, 200, 200));
-			g2d.setFont(new Font("Open Sans", Font.BOLD, HEIGHT / 50));
-			
 			DecimalFormat df = new DecimalFormat();
 			df.setMaximumFractionDigits(2);
 			
@@ -56,10 +37,39 @@ public abstract class Task
 				formattedBalance = df.format(balance);
 			}
 			
-			g2d.drawString("Balance: £" + formattedBalance, WIDTH / 48, HEIGHT / 24);
+			return formattedBalance;
+		}
+		
+		@Override
+		public void update(){}
+		
+		@Override
+		public void render(Graphics2D g2d, double delta)
+		{
+			boolean dead = balance <= 0 && hasReturned && !isSpinning;
 			
-			g2d.dispose();
-			return canvas;
+			// Render UI here
+			g2d.setColor(new Color(200, 200, 200));
+			
+			final Font bigFont = new Font("Open Sans", Font.BOLD, HEIGHT / 12);
+			g2d.setFont(bigFont);
+			
+			if(dead)
+			{
+				final String OUT_OF_MONEY = "Out of money, press 'r' to restart.";
+				g2d.drawString(OUT_OF_MONEY, (int) (WIDTH / 2 - g2d.getFontMetrics(bigFont).getStringBounds(OUT_OF_MONEY, g2d).getWidth() / 2), (int) (HEIGHT / 2 - g2d.getFontMetrics(bigFont).getStringBounds(OUT_OF_MONEY, g2d).getHeight()));
+			}
+			
+			final Font standard = new Font("Open Sans", Font.BOLD, HEIGHT / 50);
+			
+			g2d.setFont(standard);
+			g2d.drawString("FPS: " + getCurrentFrameTime(), WIDTH - 10 - (int)g2d.getFontMetrics(standard).getStringBounds("FPS: " + getCurrentFrameTime(), g2d).getWidth(), g2d.getFontMetrics(standard).getHeight());
+			
+			if(!dead)
+			{
+				g2d.drawString("Balance: £" + format(balance), WIDTH / 48, HEIGHT / 24);
+				g2d.drawString("Total Spent: £" + format(totalSpent), WIDTH / 48, (HEIGHT / 24) * 2);
+			}
 		}
 	};
 	
@@ -106,10 +116,8 @@ public abstract class Task
 			}
 		}
 		
-		public Image render(double delta)
-		{
-			return null;
-		}
+		@Override
+		public void render(Graphics2D g2d, double delta){}
 	};
 	
 	public static final Task slotTask = new Task()
@@ -152,21 +160,12 @@ public abstract class Task
 			}
 		}
 		
-		private BufferedImage canvas = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-		
 		@Override
-		public Image render(double delta)
+		public void render(Graphics2D g2d, double delta)
 		{
-			Graphics2D g2d = canvas.createGraphics();
-			g2d.setBackground(new Color(0, 0, 0, 0));
-			g2d.clearRect(0, 0, WIDTH, HEIGHT);
-			
 			g2d.drawImage(left.render(delta), 0, 0, null);
 			g2d.drawImage(middle.render(delta), 0, 0, null);
 			g2d.drawImage(right.render(delta), 0, 0, null);
-			
-			g2d.dispose();
-			return canvas;
 		}
 	};
 	
@@ -178,20 +177,11 @@ public abstract class Task
 			
 		}
 		
-		private BufferedImage canvas = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-		
 		@Override
-		public Image render(double delta)
+		public void render(Graphics2D g2d, double delta)
 		{
-			Graphics2D g2d = canvas.createGraphics();
-			g2d.setBackground(new Color(0, 0, 0, 0));
-			g2d.clearRect(0, 0, WIDTH, HEIGHT);
-			
 			g2d.setColor(UI_SLOT_LINE_COLOR);
 			g2d.fillRect(0, (HEIGHT / 2) - UI_SLOT_LINE_SIZE, WIDTH, UI_SLOT_LINE_SIZE);
-			
-			g2d.dispose();
-			return canvas;
 		}
 	};
 	
@@ -206,15 +196,9 @@ public abstract class Task
 			
 		}
 		
-		private BufferedImage canvas = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-		
 		@Override
-		public Image render(double delta)
+		public void render(Graphics2D g2d, double delta)
 		{
-			Graphics2D g2d = canvas.createGraphics();
-			g2d.setBackground(new Color(0, 0, 0, 0));
-			g2d.clearRect(0, 0, WIDTH, HEIGHT);
-			
 			g2d.setColor(UI_BACKGROUND_COLOR);
 			g2d.fillRect(0, 0, WIDTH, HEIGHT);
 			
@@ -251,9 +235,6 @@ public abstract class Task
 					(WIDTH / 6) - (UI_SLOT_BORDER_SIZE * 2),
 					HEIGHT
 			);
-			
-			g2d.dispose();
-			return canvas;
 		}
 	};
 }
