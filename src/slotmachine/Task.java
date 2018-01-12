@@ -24,7 +24,7 @@ public abstract class Task
 			df.setMaximumFractionDigits(2);
 			
 			String formattedBalance = null;
-			if(df.format(balance).length() == 3)
+			if(df.format(balance).length() == 3 && (df.format(balance).contains(".") || df.format(balance).contains(",")))
 			{
 				formattedBalance = df.format(balance) + "0"; 
 			}
@@ -132,7 +132,7 @@ public abstract class Task
 				middle.update();
 				right.update();
 				
-				if(left.speed_multiplier > 0)	left.speed_multiplier -= 0.004;
+				if(left.speed_multiplier > 0)	left.speed_multiplier -= 0.005;
 				else
 				{
 					left.speed_multiplier = 0;
