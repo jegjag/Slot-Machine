@@ -217,13 +217,13 @@ public class SlotMachine implements Runnable
 	
 	public static enum SlotSymbol
 	{
-		CHERRY("cherry.png", 200, 0.50F),
+		CHERRY("cherry.png", 150, 0.50F),
 		ORANGE("orange.png", 60, 2.00F),
 		LEMON("lemon.png", 40, 5.00F),
 		BELL("bell.png", 25, 10.00F),
-		STAR("star.png", 10, 20.00F),
+		STAR("star.png", 20, 20.00F),
 		SKULL("skull.png", 50, -2.50F),
-		PENGUIN("penguin.png", 5, 100.00F);
+		PENGUIN("penguin.png", 15, 100.00F);
 		
 		final Image icon;
 		final int chance;

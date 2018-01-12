@@ -132,7 +132,7 @@ public abstract class Task
 				middle.update();
 				right.update();
 				
-				if(left.speed_multiplier > 0)	left.speed_multiplier -= 0.005;
+				if(left.speed_multiplier > 0)	left.speed_multiplier -= 0.004;
 				else
 				{
 					left.speed_multiplier = 0;
