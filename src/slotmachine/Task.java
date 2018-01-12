@@ -69,6 +69,7 @@ public abstract class Task
 			{
 				g2d.drawString("Balance: £" + format(balance), WIDTH / 48, HEIGHT / 24);
 				g2d.drawString("Total Spent: £" + format(totalSpent), WIDTH / 48, (HEIGHT / 24) * 2);
+				g2d.drawString("Total Won: £" + format(totalWon), WIDTH / 48, (HEIGHT / 24) * 3);
 			}
 		}
 	};
