@@ -56,7 +56,7 @@ public class SlotMachine implements Runnable
 	public static boolean isSpinning = false;
 	
 	// Actual super important change stuff
-	public static float balance = 5.00F;
+	public static float balance = 2.50F;
 	public static float totalSpent = 0.00F;
 	public static float totalWon = 0.00F;
 	
