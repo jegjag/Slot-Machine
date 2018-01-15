@@ -64,7 +64,7 @@ public class SlotMachine implements Runnable
 	
 	public static void spin()
 	{
-		if(balance > 0)
+		if(balance >= 0.10F)
 		{
 			balance		-= SPIN_COST;
 			totalSpent	+= SPIN_COST;
@@ -95,6 +95,17 @@ public class SlotMachine implements Runnable
 			// 3 of the same
 			balance += selectedMiddle.symbol.payout;
 			totalWon += selectedMiddle.symbol.payout;
+		}
+		else if(selectedLeft.symbol == selectedMiddle.symbol || selectedMiddle.symbol == selectedRight.symbol)
+		{
+			// 2 of the same
+			final int TWO_DIVIDER = 4;
+			
+			if(selectedMiddle.symbol.canHaveTwo)
+			{
+				balance += selectedMiddle.symbol.payout / TWO_DIVIDER;
+				totalWon += selectedMiddle.symbol.payout / TWO_DIVIDER;
+			}
 		}
 	}
 	
@@ -220,23 +231,25 @@ public class SlotMachine implements Runnable
 	
 	public static enum SlotSymbol
 	{
-		CHERRY("cherry.png", 200, 1.00F),
-		ORANGE("orange.png", 100, 2.00F),
-		LEMON("lemon.png", 80, 5.00F),
-		BELL("bell.png", 35, 10.00F),
-		STAR("star.png", 20, 20.00F),
-		SKULL("skull.png", 50, -2.50F),
-		PENGUIN("penguin.png", 15, 100.00F);
+		CHERRY("cherry.png", 200, 1.00F, true),
+		ORANGE("orange.png", 100, 2.00F, true),
+		LEMON("lemon.png", 80, 5.00F, true),
+		BELL("bell.png", 35, 10.00F, true),
+		STAR("star.png", 20, 20.00F, true),
+		SKULL("skull.png", 50, -10F, true),
+		PENGUIN("penguin.png", 15, 100.00F, false);
 		
 		final Image icon;
 		final int chance;
 		final double payout;
+		final boolean canHaveTwo;
 		
-		SlotSymbol(String iconPath, int chance, float payout)
+		SlotSymbol(String iconPath, int chance, float payout, boolean canHaveTwo)
 		{
 			icon = get(iconPath);
 			this.chance = chance;
 			this.payout = payout;
+			this.canHaveTwo = canHaveTwo;
 		}
 	}
 	

@@ -46,7 +46,7 @@ public abstract class Task
 		@Override
 		public void render(Graphics2D g2d, double delta)
 		{
-			boolean dead = balance <= 0 && hasReturned && !isSpinning;
+			boolean dead = balance < 0.10F && hasReturned && !isSpinning;
 			
 			// Render UI here
 			g2d.setColor(new Color(200, 200, 200));
