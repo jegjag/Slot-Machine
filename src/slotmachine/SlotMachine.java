@@ -56,7 +56,7 @@ public class SlotMachine implements Runnable
 	public static boolean isSpinning = false;
 	
 	// Actual super important change stuff
-	public static float balance = 1.00F;
+	public static float balance = 5.00F;
 	public static float totalSpent = 0.00F;
 	public static float totalWon = 0.00F;
 	
@@ -185,8 +185,8 @@ public class SlotMachine implements Runnable
 			symbols[2] = new Symbol(randomSymbol());
 			symbols[3] = new Symbol(randomSymbol());
 			
-			symbols[0].y = HEIGHT / 12;
-			symbols[1].y = (HEIGHT / 12) * 2 + UI_SLOT_ICON_SIZE;
+			symbols[0].y = (HEIGHT / 12) * 1 + (UI_SLOT_ICON_SIZE * 0);
+			symbols[1].y = (HEIGHT / 12) * 2 + (UI_SLOT_ICON_SIZE * 1);
 			symbols[2].y = (HEIGHT / 12) * 3 + (UI_SLOT_ICON_SIZE * 2);
 			symbols[3].y = (HEIGHT / 12) * 4 + (UI_SLOT_ICON_SIZE * 3);
 		}
@@ -199,7 +199,12 @@ public class SlotMachine implements Runnable
 				
 				if(symbols[i].y >= HEIGHT)
 				{
-					symbols[i].y = -UI_SLOT_ICON_SIZE;
+					symbols[i].y -= HEIGHT + UI_SLOT_ICON_SIZE;
+					symbols[i].symbol = randomSymbol();
+				}
+				else if(symbols[i].y < -UI_SLOT_ICON_SIZE)
+				{
+					symbols[i].y += HEIGHT + UI_SLOT_ICON_SIZE;
 					symbols[i].symbol = randomSymbol();
 				}
 			}
