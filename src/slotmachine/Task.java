@@ -56,7 +56,7 @@ public abstract class Task
 			
 			if(dead)
 			{
-				final String OUT_OF_MONEY = "Out of money, press 'r' to restart.";
+				final String OUT_OF_MONEY = "Out of money, press 'R' to restart.";
 				g2d.drawString(OUT_OF_MONEY, (int) (WIDTH / 2 - g2d.getFontMetrics(bigFont).getStringBounds(OUT_OF_MONEY, g2d).getWidth() / 2), (int) (HEIGHT / 2 - g2d.getFontMetrics(bigFont).getStringBounds(OUT_OF_MONEY, g2d).getHeight()));
 			}
 			
