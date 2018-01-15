@@ -220,7 +220,7 @@ public class SlotMachine implements Runnable
 	
 	public static enum SlotSymbol
 	{
-		CHERRY("cherry.png", 175, 0.50F),
+		CHERRY("cherry.png", 200, 1.00F),
 		ORANGE("orange.png", 100, 2.00F),
 		LEMON("lemon.png", 80, 5.00F),
 		BELL("bell.png", 35, 10.00F),
