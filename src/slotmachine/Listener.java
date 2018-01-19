@@ -46,7 +46,7 @@ public class Listener extends Task implements KeyListener
 		
 		if(isPressed(VK_R) && !isSpinning && hasReturned)
 		{
-			balance = 1.00F;
+			balance = 2.50F;
 		}
 	}
 	

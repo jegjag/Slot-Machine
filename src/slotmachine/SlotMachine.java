@@ -241,7 +241,7 @@ public class SlotMachine implements Runnable
 		LEMON("lemon.png", 80, 5.00F, true),
 		BELL("bell.png", 35, 10.00F, true),
 		STAR("star.png", 20, 20.00F, true),
-		SKULL("skull.png", 50, -10F, true),
+		SKULL("skull.png", 100, -10F, true),
 		PENGUIN("penguin.png", 15, 100.00F, false);
 		
 		final Image icon;
